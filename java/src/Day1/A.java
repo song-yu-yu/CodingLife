@@ -6,6 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.print.attribute.standard.MediaSize;
 import java.util.Arrays;
 
+
+
 public class A {
     public static void main(String[]args){
 //        Test.out(OtherTest::out,new OtherTest(),"ssd");

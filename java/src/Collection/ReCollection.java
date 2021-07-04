@@ -1,14 +1,11 @@
-package Day1;
+package Collection;
 
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.TestOnly;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 
@@ -23,21 +20,9 @@ class B{
         System.out.println(this);
     }
 }
-public class A {
-    public static void main(String[]args){
-        ReCollection<Integer> reStrs=new ReCollection<>();
-        reStrs.add(1);
-        reStrs.add(3);
-        System.out.println(reStrs);
-        Iterator<Integer>it=reStrs.iterator();
-        reStrs.removeIf(a->a>3);
-        reStrs.forEach(System.out::println);
 
 
-    }
-}
-
-class ReCollection<E> implements Collection<E>{
+public class ReCollection<E> implements Collection<E>{
 
     private final int INITIAL_SIZE=10;
     private int size=0;
@@ -76,7 +61,7 @@ class ReCollection<E> implements Collection<E>{
         int oldSize=this.size;
         int newSize=oldSize;
         Object[] newElements=null;
-        if(length>this.size) {
+        if(length>=this.size) {
             //开始扩容，扩容的机制，是当前size加上它逻辑右移后的值
             if(elements==OriginElements){
                 elements=new Object[INITIAL_SIZE];
@@ -130,18 +115,18 @@ class ReCollection<E> implements Collection<E>{
     @Override
     public boolean removeIf(Predicate<? super E> filter) {
         //变量记录当前检测位置，有多少还在集合中的元素的个数
-        int passCount=0;
-        int lastPassPosition=-1;
+        int passCount=0;//记录过滤元素个数
         for(int i=0;i<length;++i){
             System.out.println(filter.test((E)elements[i]));
-            //不满足过滤条件，同时前面checkedNotpassCount大于0，执行移动操作，i继续向后移动
             if(!filter.test((E)elements[i])) {
+                //不满足过滤条件，同时前面有满足条件的元素开始修改
                 if(passCount>0){
                     elements[i-passCount]=elements[i];
                 }
             }
             else {
                 passCount++;
+                elements[i]=null;
                 --length;
             }
         }

@@ -12,32 +12,27 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 
-
 /*
  *
  * 没有modCount实现并发的检测
  *
  */
+class B{
+
+    public void out(){
+        System.out.println(this);
+    }
+}
 public class A {
     public static void main(String[]args){
+        ReCollection<Integer> reStrs=new ReCollection<>();
+        reStrs.add(1);
+        reStrs.add(3);
+        System.out.println(reStrs);
+        Iterator<Integer>it=reStrs.iterator();
+        reStrs.removeIf(a->a>3);
+        reStrs.forEach(System.out::println);
 
-        ReCollection<String> re=new ReCollection<>();
-        for(int i=1;i<3;++i){
-            re.add("ss");
-        }
-
-        Iterator<String> it=re.iterator();
-        while(it.hasNext()){
-            System.out.println(it.next());
-        }
-        re.forEach((a)->{a=a+"ads";});
-        re.forEach(System.out::println);
-        System.out.println(re.contains(1));
-        "12".equals(1);
-        Object obj=new Integer(1);
-        Object obj1="sd";
-        String num=(String) obj;
-        System.out.println(num);
 
     }
 }
@@ -137,22 +132,18 @@ class ReCollection<E> implements Collection<E>{
         //变量记录当前检测位置，有多少还在集合中的元素的个数
         int passCount=0;
         int lastPassPosition=-1;
-
-        int lastNotpassPosition=-1;
         for(int i=0;i<length;++i){
+            System.out.println(filter.test((E)elements[i]));
             //不满足过滤条件，同时前面checkedNotpassCount大于0，执行移动操作，i继续向后移动
-            if(!filter.test((E)elements[i])){
-                //如果前面的
+            if(!filter.test((E)elements[i])) {
                 if(passCount>0){
-                    lastNotpassPosition=i;
-                    while(filter.test((E)elements[i++])){
-
-                    }
+                    elements[i-passCount]=elements[i];
                 }
-            }else{
-                lastPassPosition=i;
             }
-
+            else {
+                passCount++;
+                --length;
+            }
         }
         return false;
     }

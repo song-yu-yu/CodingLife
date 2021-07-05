@@ -25,9 +25,6 @@ public class ReCollection<E> implements Collection<E>{
     public ReCollection(){
         elements = OriginElements;
     }
-    public void test(E a){
-        System.out.println(a.getClass().getSimpleName());
-    }
     public void outElements(){
         System.out.println(Arrays.toString(elements)+""+elements.length);
     }
@@ -93,7 +90,6 @@ public class ReCollection<E> implements Collection<E>{
 
     @Override
     public boolean contains(Object o) {
-        if(o instanceof String)
             for (int i = 0; i < length; ++i) {
                 if (elements[i].equals(o))
                     return true;
@@ -195,14 +191,31 @@ public class ReCollection<E> implements Collection<E>{
         return false;
     }
 
+    //求差集
     @Override
     public boolean removeAll(@NotNull Collection<?> c) {
+        //利用removeIf的Predicate接口
+        if(c.size()==0) return false;
+        if(size()==0) return false;
         return removeIf(c::contains);
     }
 
+
+    //求交集
     @Override
     public boolean retainAll(@NotNull Collection<?> c) {
-        return removeIf(c::contains);
+        if(c.size()==0){
+            elements=OriginElements;
+            size=0;
+            length=0;
+            return true;
+        }
+        if(length==0){
+            return false;
+        }
+        //传递一个不包含为真的lambda表达式
+        return removeIf(e->!c.contains(e));
+
     }
 
 

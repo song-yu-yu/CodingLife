@@ -11,16 +11,9 @@ import java.util.stream.Stream;
 
 /*
  *
- * 没有modCount实现并发的检测
+ * 没有实现并发的监控
  *
  */
-class B{
-
-    public void out(){
-        System.out.println(this);
-    }
-}
-
 
 public class ReCollection<E> implements Collection<E>{
 
@@ -31,6 +24,9 @@ public class ReCollection<E> implements Collection<E>{
     private final Object[] OriginElements={};
     public ReCollection(){
         elements = OriginElements;
+    }
+    public void test(E a){
+        System.out.println(a.getClass().getSimpleName());
     }
     public void outElements(){
         System.out.println(Arrays.toString(elements)+""+elements.length);
@@ -47,7 +43,6 @@ public class ReCollection<E> implements Collection<E>{
         @SuppressWarnings("unchecked")
         @Override
         public E next() {
-
             return (E)outer.elements[++cursor];
         }
     }
@@ -81,9 +76,11 @@ public class ReCollection<E> implements Collection<E>{
         elements[length++]=e;
         return true;
     }
+
+    //返回集合中元素的个数
     @Override
     public int size() {
-        return size;
+        return length;
     }
 
     @SuppressWarnings("unchecked")
@@ -116,22 +113,47 @@ public class ReCollection<E> implements Collection<E>{
     public boolean removeIf(Predicate<? super E> filter) {
         //变量记录当前检测位置，有多少还在集合中的元素的个数
         int passCount=0;//记录过滤元素个数
-        for(int i=0;i<length;++i){
-            System.out.println(filter.test((E)elements[i]));
+        int oldLength=length;
+        for(int i=0;i<oldLength;++i){
             if(!filter.test((E)elements[i])) {
                 //不满足过滤条件，同时前面有满足条件的元素开始修改
                 if(passCount>0){
                     elements[i-passCount]=elements[i];
+                    elements[i]=null;//让虚拟机释放资源
                 }
             }
             else {
                 passCount++;
-                elements[i]=null;
+                elements[i]=null;//标记为null虚拟机释放资源
                 --length;
             }
         }
         return false;
     }
+    /*
+     *返回集合的对象数组
+     */
+    @NotNull
+    @Override
+    public Object[] toArray() {
+        return Arrays.copyOf(elements,length);
+    }
+
+    /*
+     *将集合中的元素放到参数 a 中，如果elements长度比a大，返回一个新的数组，如果比a小，将elements中的所有元素拷贝进去
+     */
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T[] toArray(T[] a) {
+        if(a.length<length)
+            return (T[])Arrays.copyOf(elements,length,a.getClass());
+        System.arraycopy(a,0,elements,0,length);
+        if(a.length>length)
+            a[length]=null;
+        return a;
+    }
+
 
     @Override
     public Spliterator<E> spliterator() {
@@ -149,45 +171,53 @@ public class ReCollection<E> implements Collection<E>{
         return null;
     }
 
-    @NotNull
-    @Override
-    public Object[] toArray() {
-        return elements;
-    }
-
-    @NotNull
-    @Override
-    public <T> T[] toArray(@NotNull T[] a) {
-        return null;
-    }
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        return removeIf(o::equals);
     }
 
     @Override
     public boolean containsAll(@NotNull Collection<?> c) {
-        return false;
+        Iterator<?> it=c.iterator();
+        if(length<c.size()) return false;
+        if(length==0)return true;
+        while(it.hasNext()){
+            if(!contains(it.next()))
+                return false;
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(@NotNull Collection<? extends E> c) {
+
         return false;
     }
 
     @Override
     public boolean removeAll(@NotNull Collection<?> c) {
-        return false;
+        return removeIf(c::contains);
     }
 
     @Override
     public boolean retainAll(@NotNull Collection<?> c) {
-        return false;
+        return removeIf(c::contains);
+    }
+
+
+    //length小于size的时候可以将数组的存储空间缩小至实际存储元素的占有空间，实际上是创建新的数组并且移动元素
+    public void minimizeSize(){
+        if(length<size){
+            elements=length==0?OriginElements:Arrays.copyOf(elements,length);
+        }
     }
 
     @Override
     public void clear() {
+        for(int i=0;i<elements.length;--i){
+            elements[i]=null;
+        }
         elements= OriginElements;
         size=0;
         length=0;

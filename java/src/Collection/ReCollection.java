@@ -64,13 +64,7 @@ public class ReCollection<E> implements Collection<E>{
             size=newSize;
         }
     }
-    @Override
-    public boolean add(E e) {
-        System.out.println("add"+this.getClass().getName());
-        ensureCapacity(length+1);
-        elements[length++]=e;
-        return true;
-    }
+
 
     //返回集合中元素的个数
     @Override
@@ -78,17 +72,7 @@ public class ReCollection<E> implements Collection<E>{
         return length;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public void forEach(Consumer<? super E> action) {
 
-        System.out.println("forEach"+this.getClass().getName());
-//        for(int i=0;i<length;++i){
-            System.out.println("length:"+length);
-            action.accept((E)elements[0]);
-//        }
-
-    }
 
     @Override
     public boolean contains(Object o) {
@@ -99,11 +83,10 @@ public class ReCollection<E> implements Collection<E>{
         return false;
     }
 
-
     @Override
     public boolean isEmpty() {
 
-        return length==0?true:false;
+        return length==0;
     }
 
     @SuppressWarnings("unchecked")
@@ -133,7 +116,7 @@ public class ReCollection<E> implements Collection<E>{
      */
     @NotNull
     @Override
-    public Object[] toArray() {
+    public Object @NotNull [] toArray() {
         return Arrays.copyOf(elements,length);
     }
 
@@ -187,18 +170,38 @@ public class ReCollection<E> implements Collection<E>{
         return true;
     }
 
+
+    /*
+     * 将集合c中所有元素加入集合
+     */
     @Override
     public boolean addAll(@NotNull Collection<? extends E> c) {
-        System.out.println("addAll:"+this.getClass().getName());
-        if(c==null)
+        if(c.size()==0)
             return false;
-        c.forEach(a->this.add(a));
-        return false;
+        ReCollection<E> temp=this;
+        //利用集合cforEach函数，传入主集合的this指针，由于lambda函数的this指针是其所在外围类对象c，所以，实现传入this指针，添加函数。
+        //利用主集合this指针调用add函数。
+        c.forEach(temp::add);
+        return true;
     }
     public void out(){
         System.out.println(this.getClass().getName());
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public void forEach(Consumer<? super E> action) {
+
+        for(int i=0;i<length;++i)
+            action.accept((E)elements[i]);
+    }
+
+    @Override
+    public boolean add(E e) {
+        ensureCapacity(length+1);
+        elements[length++]=e;
+        return true;
+    }
     //求差集
     @Override
     public boolean removeAll(@NotNull Collection<?> c) {

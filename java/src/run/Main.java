@@ -12,12 +12,13 @@ import java.util.function.Predicate;
 
 public class Main {
     public static void main(String[]args){
-        ReCollection<Integer> cols=new ReCollection<Integer>();
         ReCollection<Integer> cols1=new ReCollection<Integer>();
-        cols.add(1);
-        cols1.add(2);
+        ReCollection<Integer> cols2=new ReCollection<Integer>();
+        cols1.add(1);
+        cols2.add(2);
 //        cols.out();
-        cols1.addAll(cols1);
+        cols1.addAll(cols2);
+        cols1.forEach(System.out::println);
 //        cols1.forEach(System.out::println);
     }
 }

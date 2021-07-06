@@ -187,7 +187,9 @@ public class ReCollection<E> implements Collection<E>{
 
     @Override
     public boolean addAll(@NotNull Collection<? extends E> c) {
-
+        if(c==null)
+            return false;
+        c.forEach(a->add(a));
         return false;
     }
 

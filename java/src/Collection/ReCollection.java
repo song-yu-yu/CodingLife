@@ -25,9 +25,6 @@ public class ReCollection<E> implements Collection<E>{
     public ReCollection(){
         elements = OriginElements;
     }
-    public void outElements(){
-        System.out.println(Arrays.toString(elements)+""+elements.length);
-    }
     private class ReIterator implements  Iterator<E>{
         private final ReCollection<E> outer=ReCollection.this;
         private int cursor=-1;
@@ -69,6 +66,7 @@ public class ReCollection<E> implements Collection<E>{
     }
     @Override
     public boolean add(E e) {
+        System.out.println("add"+this.getClass().getName());
         ensureCapacity(length+1);
         elements[length++]=e;
         return true;
@@ -83,9 +81,13 @@ public class ReCollection<E> implements Collection<E>{
     @SuppressWarnings("unchecked")
     @Override
     public void forEach(Consumer<? super E> action) {
-        for(int i=0;i<length;++i){
-            action.accept((E)elements[i]);
-        }
+
+        System.out.println("forEach"+this.getClass().getName());
+//        for(int i=0;i<length;++i){
+            System.out.println("length:"+length);
+            action.accept((E)elements[0]);
+//        }
+
     }
 
     @Override
@@ -187,10 +189,14 @@ public class ReCollection<E> implements Collection<E>{
 
     @Override
     public boolean addAll(@NotNull Collection<? extends E> c) {
+        System.out.println("addAll:"+this.getClass().getName());
         if(c==null)
             return false;
-        c.forEach(a->add(a));
+        c.forEach(a->this.add(a));
         return false;
+    }
+    public void out(){
+        System.out.println(this.getClass().getName());
     }
 
     //求差集
@@ -230,7 +236,7 @@ public class ReCollection<E> implements Collection<E>{
 
     @Override
     public void clear() {
-        for(int i=0;i<elements.length;--i){
+        for(int i=0;i<elements.length;++i){
             elements[i]=null;
         }
         elements= OriginElements;

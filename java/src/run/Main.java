@@ -1,26 +1,34 @@
 package run;
 import  Collection.ReCollection;
+import com.sun.corba.se.spi.activation.BadServerDefinition;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
-
+import java.util.function.Predicate;
 
 
 public class Main {
     public static void main(String[]args){
         ReCollection<Integer> cols=new ReCollection<Integer>();
-        for(int i=0;i<50;++i){
-            int temp=(int)(Math.random()*4)+1;
-            cols.add(temp);
-        }
         ReCollection<Integer> cols1=new ReCollection<Integer>();
-        cols1.add(3);
-//        cols.removeAll(cols1);
-        cols.retainAll(cols1);
-        cols.forEach(System.out::println);
+        cols.add(1);
+        cols1.add(2);
+//        cols.out();
+        cols1.addAll(cols1);
+//        cols1.forEach(System.out::println);
+    }
+}
+
+class test{
+    public void out(){
+        Predicate<Integer> pre=a->{System.out.println(this); this.print();return false;};
+        pre.test(1);
+    }
+    public void print(){
+        System.out.println(this);
     }
 }
 

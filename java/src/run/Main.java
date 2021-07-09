@@ -3,34 +3,36 @@ import  Collection.ReCollection;
 import com.sun.corba.se.spi.activation.BadServerDefinition;
 
 import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.function.Predicate;
 
 
 public class Main {
     public static void main(String[]args){
-        ReCollection<Integer> cols1=new ReCollection<Integer>();
-        ReCollection<Integer> cols2=new ReCollection<Integer>();
-        cols1.add(1);
-        cols2.add(2);
-//        cols.out();
-        cols1.addAll(cols2);
-        cols1.forEach(System.out::println);
-//        cols1.forEach(System.out::println);
+        LinkedList<Integer> l1=new LinkedList<>();
+        l1.add(1);
+        l1.add(2);
+        Iterator<Integer> it1=l1.iterator();
+        ListIterator<Integer> it2=l1.listIterator();
+        System.out.println(it2.previousIndex());
+
     }
 }
 
-class test{
-    public void out(){
-        Predicate<Integer> pre=a->{System.out.println(this); this.print();return false;};
-        pre.test(1);
-    }
-    public void print(){
-        System.out.println(this);
+
+
+interface In1{
+    public void out();
+}
+interface In2 extends In1{
+    public void out();
+}
+class Test3 implements In2{
+    public void print(){}
+
+    @Override
+    public void out() {
+
     }
 }
-
 

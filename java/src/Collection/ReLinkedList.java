@@ -2,10 +2,12 @@ package Collection;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.function.Consumer;
 
 
 /*
@@ -16,29 +18,55 @@ public class ReLinkedList <E>implements List<E>{
 
     /*
      * 链表的实现来自于内部类的对象引用。外部类看作为内部链表的封装
+     * 实现的是没有头结点的链表
      */
+    //节点数量
     private int size=0;
 
+    //链表尾指针
+    private Node<E> tail=null;
+
+    //链表头指针
+    private Node<E> head=null;
     private class Node<E>{
         private int index=-1;
-        private Node<E> nextElement=null;
-        private Node<E> previousElement=null;
+        E element=null;
+
+        //指向下一个节点
+        private Node<E> nextNode=null;
+
+        //指向先驱节点
+        private Node<E> previousNode=null;
 
     }
 
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size==0;
     }
 
+
+    //需要遍历链表
     @Override
     public boolean contains(Object o) {
+        Node<E> t=head;
+        if(o==null){
+            while(t!=null){
+                if(t.element==null) return true;
+                t=t.nextNode;
+            }
+        }else{
+            while(t!=null){
+                if(o.equals(t.element)) return true;
+                t=t.nextNode;
+            }
+        }
         return false;
     }
 
@@ -51,22 +79,68 @@ public class ReLinkedList <E>implements List<E>{
     @NotNull
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object [] obj=new Object[size];
+        Node<E> t=head;
+        int i=0;
+        while(t!=null){
+            obj[i++]=t.element;
+        }
+        return obj;
     }
 
+    @Override
+    public void forEach(Consumer<? super E> action){
+        Node<E> t=head;
+        while(t!=null) {
+            action.accept(t.element);
+            t = t.nextNode;
+        }
+    }
+    @SuppressWarnings("unchecked")
     @NotNull
     @Override
     public <T> T[] toArray(@NotNull T[] a) {
+        if(a==null){
+            return null;
+        }
+        if(a.length<size)
+            a= (T[])Array.newInstance(a.getClass().getComponentType(),size);
+        if(a.length>size)
+            a[size]=null;
+        Node<E> t=head;
+        int i=-1;
+        Object [] obj=a;
+        while(t!=null)
+            obj[++i]=t.element;
         return null;
     }
 
     @Override
     public boolean add(E e) {
-        return false;
+        Node<E> s=new Node<>();
+        s.nextNode=null;
+        s.element=e;
+        if(head==null){
+            head=s;
+            tail=s;
+            s.previousNode=null;
+            s.index=0;
+            return true;
+        }
+        s.index=++tail.index;
+        s.previousNode=tail;
+        tail.nextNode=s;
+        tail=s;
+        return true;
     }
 
     @Override
     public boolean remove(Object o) {
+        forEach(a->{
+            if(o.equals(a)){
+
+            }
+        })
         return false;
     }
 

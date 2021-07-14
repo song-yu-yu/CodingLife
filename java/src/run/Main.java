@@ -6,17 +6,17 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import Collection.ReLinkedList;
 
 
 public class Main {
     public static void main(String[]args){
-        Test1 t1=new Test1();
-        Test2 t2=new Test2();
-        Test1 t3=t2;
-        LinkedList<String> l=new LinkedList<>();
-        l.add("sdfsdf");
-        l.<Integer>toArray(new Integer[3]);
-
+        Test3<String> t= new Test3<>();
+        System.out.println(t.a);
+        System.out.println(t.b);
+        t.out();
+        System.out.println(t.a);
+        System.out.println(t.b);
     }
 }
 
@@ -36,11 +36,11 @@ class Test2 extends Test1{
 }
 
 class Test3<T>{
-    public static class c {
-        int a=1;
+    public Test1 b=new Test1();
+    public final Test1  a=b;
+    public void out(){
+        b=new Test1();
     }
-    public class d{int a=1;}
-
 
 }
 

@@ -131,11 +131,124 @@ public class ReLinkedList <E>implements List<E>{
         s.previousNode=tail;
         tail.nextNode=s;
         tail=s;
+//        return true;
         return true;
+    }
+
+
+
+
+    private class ReListItarator implements ListIterator<E>{
+        private Node<E> nextNode= null;
+        private Node<E> currentNode;
+        private Node<E> previousNode= null;
+
+        public ReListItarator(){
+            currentNode=head;
+            if(currentNode==null){
+                nextNode=null;
+                previousNode=null;
+                return;
+            }
+            nextNode=currentNode.previousNode;
+            previousNode=currentNode.nextNode;
+        }
+        @Override
+        public boolean hasNext() {
+            if(nextNode==null){
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public E next() {
+            if(nextNode!=null){
+                previousNode=currentNode;
+                currentNode=nextNode;
+                nextNode=currentNode.nextNode;
+                return currentNode.element;
+            }
+            return null;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            if(previousNode==null){
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public E previous() {
+            if(previousNode==null){
+                return null;
+            }
+            nextNode=currentNode;
+            currentNode=previousNode;
+            previousNode=currentNode.previousNode;
+            return currentNode.element;
+        }
+
+        @Override
+        public int nextIndex() {
+            if(hasNext()){
+                return nextNode.index;
+            }
+            return -1;
+        }
+
+        @Override
+        public int previousIndex() {
+            if(hasPrevious())
+                return previousNode.index;
+            return -1;
+        }
+
+        @Override
+        public void remove() {
+            if(currentNode==tail||currentNode==head){
+                if(head==null)
+                    return;
+                else if (tail == head) {
+                    currentNode=null;
+                    tail=null;
+                    head=null;
+                    return;
+                }else if(currentNode==tail){
+                    currentNode.element=null;
+                    currentNode=previousNode;
+                    previousNode=currentNode.previousNode;
+                    tail=currentNode;
+                }else {
+                    currentNode.element=null;
+                    currentNode=nextNode;
+                    nextNode=currentNode.nextNode;
+                    head=currentNode;
+                }
+            }else{
+                currentNode.element=null;
+                currentNode=nextNode;
+                nextNode=currentNode.nextNode;
+            }
+
+        }
+
+        @Override
+        public void set(E e) {
+            currentNode.element=e;
+        }
+
+        @Override
+        public void add(E e) {
+
+        }
     }
 
     @Override
     public boolean remove(Object o) {
+
         if(head==null)
             return false;
         o=tail.element;
@@ -147,6 +260,9 @@ public class ReLinkedList <E>implements List<E>{
         }
         tail=tail.previousNode;
         tail.nextNode=null;
+
+
+
         return false;
     }
 

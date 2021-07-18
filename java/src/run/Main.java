@@ -3,6 +3,7 @@ import  Collection.ReCollection;
 import com.sun.corba.se.spi.activation.BadServerDefinition;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -10,37 +11,20 @@ import java.util.function.Predicate;
 
 public class Main {
     public static void main(String[]args){
-        Test1 t1=new Test1();
-        Test2 t2=new Test2();
-        Test1 t3=t2;
-        LinkedList<String> l=new LinkedList<>();
-        l.add("sdfsdf");
-        l.<Integer>toArray(new Integer[3]);
+        LinkedList<String>list=new LinkedList<>();
+        list.add("1");
+        list.add("2");
+        list.forEach(System.out::println);
+        ListIterator<String> iter=list.listIterator(1);
 
     }
 }
 
 
 
-interface In1{
-    public void out();
+
+class Test<T>{
+    public T out(T a) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return (T)a.getClass().getConstructor().newInstance();
+    };
 }
-interface In2 extends In1{
-    public void out();
-}
-class Test1{
-
-}
-class Test2 extends Test1{
-
-}
-
-class Test3<T>{
-    public static class c {
-        int a=1;
-    }
-    public class d{int a=1;}
-
-
-}
-

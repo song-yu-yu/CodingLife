@@ -261,8 +261,6 @@ public class ReLinkedList <E>implements List<E>{
         tail=tail.previousNode;
         tail.nextNode=null;
 
-
-
         return false;
     }
 

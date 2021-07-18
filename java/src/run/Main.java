@@ -12,8 +12,19 @@ import Collection.ReLinkedList;
 
 public class Main {
     public static void main(String[]args){
+        LinkedList<String>list=new LinkedList<>();
+        list.add("1");
+        list.add("2");
+        list.forEach(System.out::println);
+        ListIterator<String> iter=list.listIterator(1);
 
     }
 }
 
 
+
+class Test<T>{
+    public T out(T a) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        return (T)a.getClass().getConstructor().newInstance();
+    };
+}

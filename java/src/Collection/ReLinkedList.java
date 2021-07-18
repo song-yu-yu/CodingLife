@@ -249,22 +249,54 @@ public class ReLinkedList <E>implements List<E>{
     @Override
     public boolean remove(Object o) {
 
+        if(head==null)
+            return false;
+        o=tail.element;
+        tail.element=null;
+        if(head==tail){
+            head=null;
+            tail=null;
+            return true;
+        }
+        tail=tail.previousNode;
+        tail.nextNode=null;
+
+
         return false;
     }
 
     @Override
     public boolean containsAll(@NotNull Collection<?> c) {
-        return false;
+      for(Node<E>s=head;s!=null;s=s.nextNode){
+          if(!c.contains(s)) return false;
+      }
+      return true;
     }
 
+    //将集合中所有的元素加入到链表
     @Override
     public boolean addAll(@NotNull Collection<? extends E> c) {
-        return false;
+        if(head==null)
+            return false;
+        Iterator < ? extends  E>iter=c.iterator();
+        while(iter.hasNext())
+            add(iter.next());
+        return true;
     }
 
+    //标为index的节点开始加入链表
+    @SuppressWarnings("unchecked")
     @Override
     public boolean addAll(int index, @NotNull Collection<? extends E> c) {
-        return false;
+        if(c==null)
+            return false;
+        Node<E>s=new Node();
+        Iterator<? extends E> e=c.iterator();
+
+        while(e.hasNext()){
+            add(e.next());
+        }
+        return true;
     }
 
     @Override
